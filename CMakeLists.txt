@@ -532,6 +532,7 @@ endif()
 # the DPDK folks make.
 #
 set(DISABLE_DPDK ON)
+set(DISABLE_GROUT OFF CACHE BOOL "Disable grout capture support (grout:NAME devices via shared memory)")
 
 #
 # We don't support D-Bus sniffing on macOS; see
@@ -2506,6 +2507,33 @@ if(NOT DISABLE_DPDK)
             message(STATUS "building without DPDK (present, but cannot be used)")
         endif()
     # Else: Finddpdk.cmake has already printed the diagnostics.
+    endif()
+endif()
+
+#
+# grout shared memory capture support.
+# No DPDK dependency — only needs grout's API headers.
+# Pass -DGROUT_INCLUDE_DIRS=/path/to/grout/api;/path/to/grout/build/api
+# to use a local source tree, or let pkg-config find installed headers.
+# Disable with -DDISABLE_GROUT=ON.
+#
+if(NOT DISABLE_GROUT)
+    if(GROUT_INCLUDE_DIRS)
+        set(GROUT_FOUND TRUE)
+        include_directories(${GROUT_INCLUDE_DIRS})
+    else()
+        find_package(PkgConfig)
+        if(PKG_CONFIG_FOUND)
+            pkg_check_modules(GROUT grout)
+        endif()
+        if(GROUT_FOUND)
+            include_directories(${GROUT_INCLUDE_DIRS})
+        endif()
+    endif()
+    if(GROUT_FOUND)
+        set(PROJECT_SOURCE_LIST_C ${PROJECT_SOURCE_LIST_C} pcap-grout.c)
+        set(PCAP_SUPPORT_GROUT TRUE)
+        message(STATUS "building with grout capture support (grout:NAME devices)")
     endif()
 endif()
 

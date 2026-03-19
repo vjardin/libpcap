@@ -251,6 +251,9 @@
 /* target host supports DPDK */
 #cmakedefine PCAP_SUPPORT_DPDK 1
 
+/* target host supports grout shared memory capture (grout:NAME devices) */
+#cmakedefine PCAP_SUPPORT_GROUT 1
+
 /* target host supports Linux usbmon for USB sniffing */
 #cmakedefine PCAP_SUPPORT_LINUX_USBMON 1
 

@@ -124,6 +124,10 @@
 #include "pcap-dpdk.h"
 #endif
 
+#ifdef PCAP_SUPPORT_GROUT
+#include "pcap-grout.h"
+#endif
+
 #ifdef ENABLE_REMOTE
 #include "pcap-rpcap.h"
 #endif
@@ -656,6 +660,9 @@ static struct capture_source_type {
 #endif
 #ifdef PCAP_SUPPORT_RDMASNIFF
 	{ rdmasniff_findalldevs, rdmasniff_create },
+#endif
+#ifdef PCAP_SUPPORT_GROUT
+	{ pcap_grout_findalldevs, pcap_grout_create },
 #endif
 #ifdef PCAP_SUPPORT_DPDK
 	{ pcap_dpdk_findalldevs, pcap_dpdk_create },
